@@ -1,0 +1,686 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>lab2</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-09-22"><meta name="DC.source" content="lab2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Convolution, Part I</a></li><li><a href="#3">Real-time Convolution</a></li><li><a href="#4">Deconvolution</a></li><li><a href="#5">Code</a></li></ul></div><pre class="codeinput"><span class="comment">% lab2.m</span>
+<span class="comment">% Please place lab2.m in your working directory</span>
+<span class="comment">% Provide the print-out from running this function</span>
+<span class="comment">% using 'publish lab2'</span>
+<span class="comment">%</span>
+<span class="comment">% T. Holton 10 Sept 08</span>
+
+test_lab2;
+</pre><h2 id="2">Convolution, Part I</h2><p>Convolution #1</p><pre class="codeinput">x = sequence([1 2 6 -3 5], 1);
+h = sequence([4 -1 5 3 2], -3);
+test_lab2(x, h);
+
+<span class="comment">% Convolution #2</span>
+test_lab2(h, x);
+
+<span class="comment">% Convolution #3</span>
+h = sequence(1, 0);
+test_lab2(x, h);
+
+<span class="comment">% Convolution #4</span>
+test_lab2(h, x);
+
+<span class="comment">% Convolution #5</span>
+x = sequence(cos(2 * pi * (1:50000) / 16), -5); <span class="comment">% nice, big sequence</span>
+h = sequence(ones(1, 10), 10);
+test_lab2(x, h);
+
+<span class="comment">% Convolution #6</span>
+test_lab2(h, x);
+
+<span class="comment">% Convolution #7</span>
+x = sequence(1, 2);
+h = sequence(1, -1);
+test_lab2(x, h);
+
+<span class="comment">% Convolution #8</span>
+test_lab2(h, x);
+</pre><pre class="codeoutput">Problem #1
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 21.9 usecs
+     which is 2.21 times Holton's elapsed time (9.9 usecs)
+     and 0.948 times Matlab's elapsed time (23.1 usecs)
+
+Problem #2
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 17.9 usecs
+     which is 2.32 times Holton's elapsed time (7.7 usecs)
+     and 8.95 times Matlab's elapsed time (2 usecs)
+
+Problem #3
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 18.5 usecs
+     which is 4.2 times Holton's elapsed time (4.4 usecs)
+     and 3.63 times Matlab's elapsed time (5.1 usecs)
+
+Problem #4
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 19.2 usecs
+     which is 3.05 times Holton's elapsed time (6.3 usecs)
+     and 4.17 times Matlab's elapsed time (4.6 usecs)
+
+Problem #5
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 25147.3 usecs
+     which is 13.4 times Holton's elapsed time (1879.7 usecs)
+     and 46.4 times Matlab's elapsed time (542.2 usecs)
+
+Problem #6
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 23448.7 usecs
+     which is 15.7 times Holton's elapsed time (1493.6 usecs)
+     and 174 times Matlab's elapsed time (134.8 usecs)
+
+Problem #7
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 10.5 usecs
+     which is 2.33 times Holton's elapsed time (4.5 usecs)
+     and 2.1 times Matlab's elapsed time (5 usecs)
+
+Problem #8
+   Your data are correct
+   Your offset is correct
+     Your elapsed time is 6.8 usecs
+     which is 2 times Holton's elapsed time (3.4 usecs)
+     and 4.25 times Matlab's elapsed time (1.6 usecs)
+
+</pre><h2 id="3">Real-time Convolution</h2><p>Real-time convolution #1</p><pre class="codeinput">x = [1 4 2 6 5];
+h = [4 -1 3 -5 2];
+test_lab2a;
+test_lab2a(x, h);
+
+<span class="comment">% Real-time convolution convolution #2</span>
+test_lab2a(h, x);
+
+<span class="comment">% Real-time convolution #3</span>
+x = cos(2 * pi * (1:50000) / 16); <span class="comment">% nice, big sequence</span>
+h = ones(1, 10);
+test_lab2a(x, h);
+</pre><pre class="codeoutput">Real-time convolution #1
+   Your data are correct
+
+Real-time convolution #2
+   Your data are correct
+
+Real-time convolution #3
+   Your data are correct
+
+</pre><h2 id="4">Deconvolution</h2><p>Deconvolution #1</p><pre class="codeinput">h = sequence([1 3 2], 2);
+y = sequence([1 6 15 20 15 7 2], -1);
+test_lab2b;
+test_lab2b(y, h);
+
+<span class="comment">% Deconvolution #1</span>
+y = sequence([-1 -2 0 0 0 0 1 2], 2);
+test_lab2b(y, h);
+</pre><pre class="codeoutput">Deconvolution problem #1
+   Your data are correct
+   Your offset is correct
+
+Deconvolution problem #2
+   Your data are correct
+   Your offset is correct
+
+</pre><h2 id="5">Code</h2><pre class="codeinput">disp(<span class="string">'---------------------------------------------------'</span>)
+disp(<span class="string">'                     Code'</span>)
+disp(<span class="string">'---------------------------------------------------'</span>)
+type <span class="string">sequence</span>
+type <span class="string">conv_rt</span>
+</pre><pre class="codeoutput">---------------------------------------------------
+                     Code
+---------------------------------------------------
+
+% Convolution
+%x = [1 2 1]
+%h = [1 -1 -1 1]
+%H = [h 0 0]
+%&gt;&gt; 1 -1 -1 1 0 0
+%H = [H;0 h 0]
+%&gt;&gt; 1 -1 -1  1 0 0
+%   0  1 -1 -1 1 0
+%Inverse Matrix
+%y/H ==&gt; yH^(-1)
+%offset will be the point inbetween 0 and 1 is offset 1 and -1 and 1 will
+%be offset 0
+classdef sequence
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Code from Lab1%%%%%%%%%%%%%%%%%%%%%%%%%%
+	properties
+		data
+		offset
+	end
+	methods
+		function s = sequence(data, offset)
+			s.data = data;
+			s.offset = offset;
+		end
+		%next function
+		function y = flip(dataflip) % flips data
+			array = dataflip.data; % storing the input data
+			off_set = dataflip.offset; % storing offset data
+			size = length(array); % getting size of array
+			i1 = find(array, 1,'first'); % getting the offset with the leading zeros removed
+			off_set = off_set - i1 + 1; % calculating the offset
+			a = 1;
+			b = size;
+			for i=1:size % for loop to flip data around
+				array(b) = dataflip.data(i); % a temporary array to store the flipped numbers
+				b = size - a;
+				a = a + 1;
+			end
+			out = array(find(array, 1,'first'):find(array, 1,'last')); % gets rid of leading and trailing zero
+			y = sequence(out, off_set); % output
+		end
+		%next function
+		function y = shift(datashift, offsetshift) % shifts data
+			array = datashift.data; % storing input data
+			off_set = datashift.offset; % storing offset of data
+			value = off_set + offsetshift; % calculating the new offset
+			y = sequence(array, value); % output
+		end
+		%next function
+		function y = plus(s1, s2) % add overload
+			if(isnumeric(s1)) % if s1 is numeric
+				array2 = s2.data; % data of s2
+				offsetout = s2.offset; % offset of s2
+				s3 = array2 + s1;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			elseif(isnumeric(s2))% if s2 is numeric
+				array1 = s1.data; % data of s1
+				offsetout = s1.offset; % offset of s1
+				s3 = array1 + s2;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			else % if s1 and s2 are sequences
+				array1 = s1.data; % data of first array
+				offset1 = s1.offset; % offset of first array
+				size1 = length(array1); % size of first array
+				array2 = s2.data; % data of second array
+				offset2 = s2.offset; % offset of second array
+				size2 = length(array2); % size of second array
+				if(offset1 == offset2) % same offset
+					for i=1:size1
+						s3(i) = array1(i) + array2(i);
+					end
+					offsetout = offset1;
+				elseif(offset1 &gt; offset2) % offset of s1 &gt; offset of s2
+					a = 1; % index of the output array
+					diff = offset1 - offset2;
+					for i=1:diff % first numbers of array1
+						s3(i) = array1(i);
+						a = a + 1;
+					end
+					for i=1:size2 % arrray1 plus array2
+						if(a &lt;= size1) % if they are still overlapping
+							s3(a) = array1(a) + array2(i);
+						else % if they are no longer overlapping
+							s3(a) = array2(i);
+						end
+						a = a + 1;
+					end
+					if (size1 &gt; size2 + offset1) % array1 is still goning even though array2 has run out of values
+						for i = 1:size1 - a
+							s3(a) = array1(a);
+						end
+					end
+					offsetout = offset1; % output offset
+				elseif(offset2 &gt; offset1) % offset of s2 &gt; offset of s1
+					a = 1;
+					diff = offset2 - offset1;
+					for i=1:diff % first numbers of array2
+						s3(i) = array2(i);
+						a = a + 1;
+					end
+					for i=1:size1 % arrray1 plus array2
+						if(a &lt;= size2) % if they are still overlapping
+							s3(a) = array2(a) + array1(i);
+						else % if they are no longer overlapping
+							s3(a) = array1(i);
+						end
+						a = a + 1;
+					end
+					if (size2 &gt; size1 + offset2)% array2 is still goning even though array1 has run out of values
+						for i = 1:size2 - a
+							s3(a) = array2(a);
+						end
+					end
+					offsetout = offset2; % output offset
+				end
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			end
+		end
+		%next function
+		function y = minus(s1, s2) % minus overload (not done, remove leading and trailing zeros)
+			if(isnumeric(s1)) % if s1 is numeric
+				array2 = s2.data; % data of s2
+				offsetout = s2.offset; % offset of s2
+				s3 = array2 - s1;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			elseif(isnumeric(s2))% if s2 is numeric
+				array1 = s1.data; % data of s1
+				offsetout = s1.offset; % offset of s1
+				s3 = array1 - s2;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			else % if s1 and s2 are sequences
+				array1 = s1.data; % data of first array
+				offset1 = s1.offset; % offset of first array
+				size1 = length(array1); % size of first array
+				array2 = s2.data; % data of second array
+				offset2 = s2.offset; % offset of second array
+				size2 = length(array2); % size of second array
+				if(offset1 == offset2) % same offset
+					for i=1:size1
+						s3(i) = array1(i) - array2(i);
+					end
+					offsetout = offset1;
+				elseif(offset1 &gt; offset2) % offset of s1 &gt; offset of s2
+					a = 1; % index of the output array
+					diff = offset1 - offset2;
+					for i=1:diff % first numbers of array1
+						s3(i) = array1(i);
+						a = a + 1;
+					end
+					for i=1:size2 % arrray1 minus array2
+						if(a &lt;= size1) % if they are still overlapping
+							s3(a) = array1(a) - array2(i);
+						else % if they are no longer overlapping
+							s3(a) = array2(i);
+						end
+						a = a + 1;
+					end
+					if (size1 &gt; size2 + offset1) % array1 is still goning even though array2 has run out of values
+						for i = 1:size1 - a
+							s3(a) = array1(a);
+						end
+					end
+					offsetout = offset1; % output offset
+				elseif(offset2 &gt; offset1) % offset of s2 &gt; offset of s1
+					a = 1;
+					diff = offset2 - offset1;
+					for i=1:diff % first numbers of array2
+						s3(i) = array2(i);
+						a = a + 1;
+					end
+					for i=1:size1 % arrray1 minus array2
+						if(a &lt;= size2) % if they are still overlapping
+							s3(a) = array2(a) - array1(i);
+						else % if they are no longer overlapping
+							s3(a) = array1(i);
+						end
+						a = a + 1;
+					end
+					if (size2 &gt; size1 + offset2)% array2 is still goning even though array1 has run out of values
+						for i = 1:size2 - a
+							s3(a) = array2(a);
+						end
+					end
+					offsetout = offset2; % output offset
+				end
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			end
+		end
+		%next function
+		function y = mtimes(s1, s2) % mtimes overload
+			if(isnumeric(s1)) % if s1 is numeric
+				array2 = s2.data; % data of s2
+				offsetout = s2.offset; % offset of s2
+				s3 = array2 * s1;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			elseif(isnumeric(s2))% if s2 is numeric
+				array1 = s1.data; % data of s1
+				offsetout = s1.offset; % offset of s1
+				s3 = array1 * s2;
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			else % if s1 and s2 are sequences
+				array1 = s1.data; % data of first array
+				offset1 = s1.offset; % offset of first array
+				size1 = length(array1); % size of first array
+				array2 = s2.data; % data of second array
+				offset2 = s2.offset; % offset of second array
+				size2 = length(array2); % size of second array
+				if(offset1 == offset2) % same offset
+					for i=1:size1
+						s3(i) = array1(i) * array2(i);
+					end
+					offsetout = offset1;
+				elseif(offset1 &gt; offset2) % offset of s1 &gt; offset of s2
+					a = 1; % index of the output array
+					diff = offset1 - offset2;
+					for i=1:diff % first numbers of array1
+						s3(i) = array1(i);
+						a = a + 1;
+					end
+					for i=1:size2 % arrray1 times array2
+						if(a &lt;= size1) % if they are still overlapping
+							s3(a) = array1(a) * array2(i);
+						else % if they are no longer overlapping
+							s3(a) = array2(i);
+						end
+						a = a + 1;
+					end
+					if (size1 &gt; size2 + offset1) % array1 is still goning even though array2 has run out of values
+						for i = 1:size1 - a
+							s3(a) = array1(a);
+						end
+					end
+					offsetout = offset1; % output offset
+				elseif(offset2 &gt; offset1) % offset of s2 &gt; offset of s1
+					a = 1;
+					diff = offset2 - offset1;
+					for i=1:diff % first numbers of array2
+						s3(i) = array2(i);
+						a = a + 1;
+					end
+					for i=1:size1 % arrray1 times array2
+						if(a &lt;= size2) % if they are still overlapping
+							s3(a) = array2(a) * array1(i);
+						else % if they are no longer overlapping
+							s3(a) = array1(i);
+						end
+						a = a + 1;
+					end
+					if (size2 &gt; size1 + offset2)% array2 is still goning even though array1 has run out of values
+						for i = 1:size2 - a
+							s3(a) = array2(a);
+						end
+					end
+					offsetout = offset2; % output offset
+				end
+				i1 = find(s3,1,'first'); % getting the offset with the leading zeros removed
+				offsetout = offsetout - i1 + 1; % calculating the offset
+				s4 = s3(find(s3,1,'first'):find(s3,1,'last')); % gets rid of leading and trailing zero
+				y = sequence(s4, offsetout);% output
+			end
+		end
+		%next function
+		function stem(s1)% overloads stem function
+			array = s1.data;
+			off_set = s1.offset;
+			size = length(array);
+			endpoint = size - off_set-1; % calcuating the endpoint of the array with the offset and the -1 is needed to get the same size array as the data
+			startpoint = 0 - off_set; % calcuating the startpoint with offset
+			n = startpoint:endpoint; % making the x-axis array
+			stem(n, array);
+		end
+		%%%%%%%%%%%%%%%%%%%%%%%%%Convovle Code%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		function y = conv(x,h)
+			size_x = length(x.data);
+			size_h = length(h.data);
+			offset_x = x.offset;
+			offset_h = h.offset;
+			size_output = size_x + size_h - 1; %size of the output array
+			if(size_x &lt; size_h)
+				first = x.data; %smaller array
+				second = h.data; %larger array
+			else
+				first = h.data;
+				second = x.data;
+			end
+			output_offset = offset_x + offset_h;
+			nextrow = 0;
+			for i=1:length(first) % makes the matrix
+				for j=1:size_output
+					if(j &gt; length(second)) % when the second array is all copied, then add zeros until you reac the end 
+						martix(i,j) = 0;
+					else
+						martix(i,j) = second(j); % copies the values from the second array
+					end
+					if(nextrow &gt; 0) % for all rows after the first one
+						if(j == 1) % first point of the next row has to have a zero added to it
+							martix(i,j) = 0;
+						else
+							martix(i,j) = martix(i - 1,j - 1); %copies the previous row without the last value to make it seem like a shift
+						end
+					end
+				end
+				nextrow = nextrow + 1; % makes sure to let the program know that the first row of the matrix has been copied
+			end
+			output = first* martix; % multiple martix together
+			y = sequence(output, output_offset);
+		end
+		%next function
+		function y = deconv(y,h)
+			y_data = y.data;
+			h_data = h.data;
+			output_offset = y.offset;
+			h_offset = h.offset;
+			input_offset = output_offset - h_offset;
+			input_size = length(y_data) - length(h_data) + 1;
+			nextrow = 0;
+			for i=1:input_size % makes the matrix
+				for j=1:length(y_data)
+					if(j &gt; length(h_data)) % when the second array is all copied, then add zeros until you reac the end 
+						martix(i,j) = 0;
+					else
+						martix(i,j) = h_data(j); % copies the values from the second array
+					end
+					if(nextrow &gt; 0) % for all rows after the first one
+						if(j == 1) % first point of the next row has to have a zero added to it
+							martix(i,j) = 0;
+						else
+							martix(i,j) = martix(i - 1,j - 1); %copies the previous row without the last value to make it seem like a shift
+						end
+					end
+				end
+				nextrow = nextrow + 1; % makes sure to let the program know that the first row of the matrix has been copied
+			end
+			input = y_data/martix;
+			y = sequence(input,input_offset);
+		end
+	end
+end
+
+function y = conv_rt(x,h)
+	size_x = length(x);
+	size_h = length(h);
+	if(size_x &lt; size_h)
+		first = x;
+		second = h;
+	else
+		first = h;
+		second = x;
+	end
+	outputlength = size_x + size_h - 1;
+	temp = zeros(1,length(first));
+	index = 1;
+	shift = length(temp);
+	output = length(outputlength);
+	while(index &lt; outputlength + 1)
+		for i=1:length(temp) %shifts the elements of temp
+			if(i == length(temp))
+				if(index &gt; length(second)) %if second is out of elements add 0
+					shift(1) = 0;
+				else
+					shift(1) = second(index);
+				end
+			else
+				shift(i+1) = temp(i);
+			end
+		end
+		temp = shift; %putting the shifted array back to the temp array
+		y1 = 0;
+		for i=1:length(first)
+			value = first(i)*temp(i);
+			y1 = y1 + value;
+		end
+		output(index) = y1;
+		index = index + 1;
+	end
+	y = output;
+end
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% lab2.m
+% Please place lab2.m in your working directory 
+% Provide the print-out from running this function
+% using 'publish lab2'
+%
+% T. Holton 10 Sept 08
+
+test_lab2;
+
+%% Convolution, Part I
+% Convolution #1
+x = sequence([1 2 6 -3 5], 1);
+h = sequence([4 -1 5 3 2], -3);
+test_lab2(x, h);
+
+% Convolution #2
+test_lab2(h, x);
+
+% Convolution #3
+h = sequence(1, 0);
+test_lab2(x, h);
+
+% Convolution #4
+test_lab2(h, x);
+
+% Convolution #5
+x = sequence(cos(2 * pi * (1:50000) / 16), -5); % nice, big sequence
+h = sequence(ones(1, 10), 10);
+test_lab2(x, h);
+
+% Convolution #6
+test_lab2(h, x);
+
+% Convolution #7
+x = sequence(1, 2);
+h = sequence(1, -1);
+test_lab2(x, h);
+
+% Convolution #8
+test_lab2(h, x);
+
+%% Real-time Convolution
+% Real-time convolution #1
+x = [1 4 2 6 5];
+h = [4 -1 3 -5 2];
+test_lab2a;
+test_lab2a(x, h);
+
+% Real-time convolution convolution #2
+test_lab2a(h, x);
+
+% Real-time convolution #3
+x = cos(2 * pi * (1:50000) / 16); % nice, big sequence
+h = ones(1, 10);
+test_lab2a(x, h);
+
+%% Deconvolution
+% Deconvolution #1
+h = sequence([1 3 2], 2);
+y = sequence([1 6 15 20 15 7 2], -1);
+test_lab2b;
+test_lab2b(y, h);
+
+% Deconvolution #1
+y = sequence([-1 -2 0 0 0 0 1 2], 2);
+test_lab2b(y, h);
+
+%% Code
+disp('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-')
+disp('                     Code')
+disp('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-')
+type sequence
+type conv_rt
+
+##### SOURCE END #####
+--></body></html>
